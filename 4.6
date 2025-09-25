@@ -1,0 +1,410 @@
+        using UnityEngine;
+        using UnityEngine.UI;
+
+        public class UIExample : MonoBehaviour
+        {
+            public Text scoreText; 
+
+            void Start()
+            {
+                scoreText.text = "Puntos: 0"; 
+            }
+        }
+		        using UnityEngine;
+        using UnityEditor.UIElements; 
+        using UnityEngine.UIElements; 
+
+        public class RuntimeUI : MonoBehaviour
+        {
+            public UIDocument uiDocument; 
+
+            void Start()
+            {
+                VisualElement root = uiDocument.rootVisualElement;
+                Button myButton = root.Q<Button>("MyButton"); 
+
+                myButton.clicked += () => {
+                    Debug.Log("¡Botón presionado!");
+                };
+            }
+        }
+		
+		    using UnityEngine;
+
+    [RequireComponent(typeof(CharacterController))] 
+    public class PlayerMovement : MonoBehaviour
+    {
+        public float speed = 5.0f; 
+        private CharacterController controller;
+
+        void Start()
+        {
+           
+            controller = GetComponent<CharacterController>();
+        }
+
+        void Update()
+        {
+     
+            float horizontalInput = Input.GetAxis("Horizontal"); 
+            float verticalInput = Input.GetAxis("Vertical");   
+
+           
+            Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput);
+
+          
+            movementDirection = Vector3.Normalize(movementDirection);
+
+            controller.SimpleMove(movementDirection * speed);
+        }
+    }
+	using UnityEngine;
+
+public class DetectorDeColisiones : MonoBehaviour
+{
+    void OnCollisionEnter(Collision collisionInfo)
+    {
+        Debug.Log("Se ha detectado una colisión con el objeto: " + collisionInfo.collider.name);
+    }
+}
+        public Transform target; 
+        public Vector3 offset; 
+		
+		        void Update()
+        {
+            transform.position = target.position + offset;
+        }
+		    using UnityEngine;
+
+    public class MovimientoPersonaje : MonoBehaviour
+    {
+        public float velocidadMovimiento = 5.0f; 
+        public CharacterController controlador; 
+
+        void Start()
+        {
+            
+            controlador = GetComponent<CharacterController>();
+        }
+
+        void Update()
+        {
+       
+            float inputHorizontal = Input.GetAxis("Horizontal");
+            float inputVertical = Input.GetAxis("Vertical");
+
+            Vector3 direccionMovimiento = new Vector3(inputHorizontal, 0, inputVertical);
+            direccionMovimiento = transform.TransformDirection(direccionMovimiento); 
+
+            controlador.SimpleMove(direccionMovimiento * velocidadMovimiento);
+        }
+    }
+	using UnityEngine;
+
+public class MovimientoPersonaje : MonoBehaviour
+{
+    public float velocidad = 5.0f; 
+    public float velocidadSalto = 8.0f; 
+    private CharacterController controller; 
+    private Vector3 velocidadDireccion = Vector3.zero; 
+
+    void Start()
+    {
+        controller = GetComponent<CharacterController>();
+    }
+
+    void Update()
+    {
+        float movimientoHorizontal = Input.GetAxis("Horizontal"); 
+        float movimientoVertical = Input.GetAxis("Vertical");  
+
+        Vector3 direccionMovimiento = new Vector3(movimientoHorizontal, 0f, movimientoVertical);
+
+        controller.Move(direccionMovimiento * velocidad * Time.deltaTime); 
+
+        if (Input.GetButtonDown("Jump") && controller.isGrounded) 
+        {
+            velocidadDireccion.y = velocidadSalto; 
+        }
+
+        velocidadDireccion.y -= 9.81f * Time.deltaTime; 
+        controller.Move(velocidadDireccion * Time.deltaTime);
+    }
+}using UnityEngine;
+
+public class MovimientoBasico : MonoBehaviour
+{
+    public float velocidad = 5.0f;
+
+    void Update()
+    {
+        float movimientoHorizontal = Input.GetAxis("Horizontal");
+        float movimientoVertical = Input.GetAxis("Vertical");
+
+        Vector3 direccion = new Vector3(movimientoHorizontal, 0f, movimientoVertical);
+        transform.Translate(direccion.normalized * velocidad * Time.deltaTime);
+    }
+}
+using UnityEngine;
+
+public class MovimientoFisico : MonoBehaviour
+{
+    public float fuerzaMovimiento = 10.0f;
+    private Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate() 
+    {
+        float movimientoHorizontal = Input.GetAxis("Horizontal");
+        float movimientoVertical = Input.GetAxis("Vertical");
+
+        Vector3 direccion = new Vector3(movimientoHorizontal, 0f, movimientoVertical);
+        rb.AddForce(direccion.normalized * fuerzaMovimiento);
+    }
+}
+public int nivelActual = 1;
+public float velocidadEnemigoBase = 2f;
+public float velocidadEnemigo;
+
+void Start() {
+
+    velocidadEnemigo = velocidadEnemigoBase * nivelActual; 
+}
+
+void ActualizarDificultad() {
+    nivelActual++;
+    velocidadEnemigo = velocidadEnemigoBase * nivelActual;
+   
+}
+
+public void GuardarProgreso(int nivelJugador) {
+    PlayerPrefs.SetInt("NivelJugador", nivelJugador);
+    PlayerPrefs.Save(); 
+}
+
+public int CargarProgreso() {
+    return PlayerPrefs.GetInt("NivelJugador", 1); 
+
+}
+
+        using UnityEngine;
+
+        public class LevelGenerator : MonoBehaviour
+        {
+            public GameObject obstaclePrefab; 
+            public int numberOfObstacles = 10;
+            public Vector3 spawnArea = new Vector3(50, 0, 50); 
+            void Start()
+            {
+                GenerateLevel();
+            }
+
+            void GenerateLevel()
+            {
+                for (int i = 0; i < numberOfObstacles; i++)
+                {
+                 
+                    Vector3 randomPosition = new Vector3(
+                        Random.Range(-spawnArea.x / 2, spawnArea.x / 2),
+                        Random.Range(-spawnArea.y / 2, spawnArea.y / 2),
+                        Random.Range(-spawnArea.z / 2, spawnArea.z / 2)
+                    );
+
+                    Instantiate(obstaclePrefab, randomPosition, Quaternion.identity);
+                }
+            }
+        }
+		
+		using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class LevelManager : MonoBehaviour
+{
+    public void LoadNextLevel()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex + 1);
+    }
+
+    public void LoadLevelByName(string levelName)
+    {
+        SceneManager.LoadScene(levelName);
+    }
+
+    public void RestartLevel()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+}
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "NivelData", menuName = "Juego/Nivel")]
+public class LevelData : ScriptableObject
+{
+    public string levelName;
+    public GameObject[] enemigos;
+    public Vector3 playerStartPosition;
+}
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class LevelGenerator : MonoBehaviour
+{
+    public LevelData currentLevel;
+
+    void Start()
+    {
+        if (currentLevel != null)
+        {
+            GenerateLevel(currentLevel);
+        }
+    }
+
+    void GenerateLevel(LevelData levelData)
+    {
+        foreach (GameObject enemyPrefab in levelData.enemigos)
+        {
+            Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+        GameObject.FindWithTag("Player").transform.position = levelData.playerStartPosition;
+    }
+}
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class LevelGenerator : MonoBehaviour
+{
+    public LevelData currentLevel;
+
+    void Start()
+    {
+        if (currentLevel != null)
+        {
+            GenerateLevel(currentLevel);
+        }
+    }
+
+    void GenerateLevel(LevelData levelData)
+    {
+        foreach (GameObject enemyPrefab in levelData.enemigos)
+        {
+            Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+        }
+
+        GameObject.FindWithTag("Player").transform.position = levelData.playerStartPosition;
+    }
+}
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class LevelManager : MonoBehaviour
+{
+    public LevelData[] allLevels; 
+    private int currentLevelIndex = 0;
+
+    public void LoadLevel(int levelIndex)
+    {
+        if (levelIndex >= 0 && levelIndex < allLevels.Length)
+        {
+            currentLevelIndex = levelIndex;
+            SceneManager.LoadScene("EscenaDeJuegoBase");
+        }
+    }
+}
+using UnityEngine;
+
+public class GestorIluminacion : MonoBehaviour
+{
+    public Light luzPrincipal; 
+
+    void Start()
+    {
+
+        luzPrincipal.intensity = 0.8f;
+        luzPrincipal.color = Color.white;
+    }
+
+    void Update()
+    {
+   
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            luzPrincipal.intensity += Time.deltaTime * 0.1f;
+            luzPrincipal.intensity = Mathf.Clamp(luzPrincipal.intensity, 0f, 2f); 
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            luzPrincipal.intensity -= Time.deltaTime * 0.1f;
+            luzPrincipal.intensity = Mathf.Clamp(luzPrincipal.intensity, 0f, 2f);
+        }
+    }
+}
+using UnityEngine;
+using UnityEngine.SceneManagement; 
+using UnityEngine.UI; 
+
+public class NavegacionUI : MonoBehaviour
+{
+    public string sceneName; 
+
+    public void IrAScema()
+    {
+
+        SceneManager.LoadScene(sceneName); 
+    }
+
+    public void MostrarPanel(GameObject panel)
+    {
+        panel.SetActive(true); 
+    }
+}
+using UnityEngine;
+
+public class ExplosionOnDestroy : MonoBehaviour
+{
+    public ParticleSystem explosionParticles;
+
+    void OnDestroy()
+    {
+        if (explosionParticles != null)
+        {
+            Instantiate(explosionParticles, transform.position, Quaternion.identity);
+        }
+    }
+}
+        using UnityEngine;
+
+        public class EfectoRecogida : MonoBehaviour
+        {
+            public ParticleSystem estelaParticulas; 
+            public GameObject objetoRecogido;   
+
+            void Start()
+            {
+                if (estelaParticulas != null)
+                {
+                    estelaParticulas.Stop();
+                }
+            }
+
+            void OnTriggerEnter(Collider other)
+            {
+                if (other.CompareTag("Player")) 
+                {
+                    if (estelaParticulas != null)
+                    {
+                        estelaParticulas.Play();
+                    }
+                    if (objetoRecogido != null)
+                    {
+                        Destroy(objetoRecogido);
+                    }
+                }
+            }
+        }
